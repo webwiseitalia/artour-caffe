@@ -247,32 +247,35 @@ export default function Homepage() {
                 animate={{ y: 0 }}
                 transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
                 className="text-white font-bold leading-[0.85]"
-                style={{ fontSize: 'clamp(5rem, 22vw, 20rem)' }}
+                style={{ fontSize: 'clamp(4rem, 18vw, 16rem)' }}
               >
                 ARTOUR
               </motion.h1>
             </div>
+            <div className="overflow-hidden">
+              <motion.h2
+                initial={{ y: '100%' }}
+                animate={{ y: 0 }}
+                transition={{ duration: 1.2, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
+                className="text-[#E8B86D] font-bold leading-[0.85]"
+                style={{ fontSize: 'clamp(3rem, 12vw, 10rem)' }}
+              >
+                CAFFÈ
+              </motion.h2>
+            </div>
             <motion.div
-              initial={{ x: -50, opacity: 0 }}
-              animate={{ x: 0, opacity: 1 }}
-              transition={{ delay: 0.6, duration: 0.8 }}
-              className="flex items-center gap-6 mt-4"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 1, duration: 0.8 }}
+              className="flex items-center gap-4 mt-6"
             >
-              <span className="text-[#E8B86D] text-sm tracking-[0.5em]">CAFFÈ</span>
               <motion.span
                 initial={{ scaleX: 0 }}
                 animate={{ scaleX: 1 }}
-                transition={{ delay: 1, duration: 0.8 }}
-                className="w-24 h-px bg-[#E8B86D] origin-left"
+                transition={{ delay: 1.2, duration: 0.8 }}
+                className="w-16 h-px bg-[#E8B86D] origin-left"
               />
-              <motion.span
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 1.2, duration: 0.6 }}
-                className="text-white/30 text-xs hidden md:block"
-              >
-                Porto Turistico di Lovere
-              </motion.span>
+              <span className="text-white/30 text-xs tracking-widest">Porto Turistico di Lovere</span>
             </motion.div>
           </div>
         </div>
