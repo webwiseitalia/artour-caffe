@@ -1,100 +1,103 @@
+import { Routes, Route } from 'react-router-dom'
+import Navbar from './components/Navbar'
+import Footer from './components/Footer'
+import ScrollToTop from './components/ScrollToTop'
+import Homepage from './pages/Homepage'
+import ChiSiamo from './pages/ChiSiamo'
+import Menu from './pages/Menu'
+import Eventi from './pages/Eventi'
+import Galleria from './pages/Galleria'
+import Contatti from './pages/Contatti'
+
 function App() {
   return (
-    <div className="min-h-screen flex flex-col justify-center" style={{ backgroundColor: '#1E1E1E' }}>
-      {/* Hero Section */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-        <div className="text-center">
-          {/* Badge - Glass style */}
-          <div
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full mb-8 backdrop-blur-sm"
-            style={{
-              backgroundColor: 'rgba(34, 197, 94, 0.1)',
-              border: '1px solid rgba(34, 197, 94, 0.3)'
-            }}
-          >
-            <span className="relative flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75" style={{ backgroundColor: '#22c55e' }}></span>
-              <span className="relative inline-flex rounded-full h-2 w-2" style={{ backgroundColor: '#22c55e' }}></span>
-            </span>
-            <span className="text-sm font-medium" style={{ color: '#22c55e' }}>Creato con STUD</span>
-          </div>
+    <>
+      <ScrollToTop />
+      <div className="min-h-screen flex flex-col">
+        <Navbar />
+        <main className="flex-grow">
+          <Routes>
+            <Route path="/" element={<Homepage />} />
+            <Route path="/chi-siamo" element={<ChiSiamo />} />
+            <Route path="/menu" element={<Menu />} />
+            <Route path="/eventi" element={<Eventi />} />
+            <Route path="/galleria" element={<Galleria />} />
+            <Route path="/contatti" element={<Contatti />} />
+            <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+            <Route path="/cookie-policy" element={<CookiePolicy />} />
+          </Routes>
+        </main>
+        <Footer />
+      </div>
+    </>
+  )
+}
 
-          <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-white mb-6">
-            Benvenuto su{' '}
-            <span style={{ color: '#22c55e' }}>Artour Caffe</span>
-          </h1>
-
-          <p className="text-lg sm:text-xl text-white/60 max-w-2xl mx-auto mb-10">
-            Il tuo nuovo sito web e pronto per essere personalizzato.
+function PrivacyPolicy() {
+  return (
+    <div className="min-h-screen bg-grigio-perla pt-32 pb-20">
+      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h1 className="font-heading text-4xl font-bold text-carbone mb-8">Privacy Policy</h1>
+        <div className="bg-white rounded-2xl p-8 shadow-sm prose prose-gray max-w-none">
+          <p className="text-grigio leading-relaxed mb-6">
+            <strong>Artour Caffè</strong> - Via del Cantiere, 14 - 24065 Lovere (BG)
           </p>
-
-          {/* Call to action */}
-          <div
-            className="inline-flex items-center gap-3 px-6 py-4 rounded-2xl backdrop-blur-sm"
-            style={{
-              backgroundColor: 'rgba(255, 255, 255, 0.03)',
-              border: '2px solid rgba(255, 255, 255, 0.1)'
-            }}
-          >
-            <span className="text-2xl">👈</span>
-            <p className="text-white/80 text-lg">
-              Usa la <span style={{ color: '#22c55e' }} className="font-semibold">chat a sinistra</span> per iniziare a sviluppare il tuo sito
-            </p>
-          </div>
+          <h2 className="font-heading text-2xl font-bold text-carbone mt-8 mb-4">1. Titolare del Trattamento</h2>
+          <p className="text-grigio leading-relaxed mb-6">
+            Il titolare del trattamento dei dati personali è Artour Caffè, con sede in Via del Cantiere, 14 - 24065 Lovere (BG).
+            Per qualsiasi informazione relativa al trattamento dei dati personali è possibile contattarci al numero +39 380 365 4787.
+          </p>
+          <h2 className="font-heading text-2xl font-bold text-carbone mt-8 mb-4">2. Tipologia di Dati Raccolti</h2>
+          <p className="text-grigio leading-relaxed mb-6">
+            I dati personali raccolti attraverso il form di contatto presente sul sito includono: nome, indirizzo email,
+            numero di telefono (facoltativo) e il contenuto del messaggio inviato.
+          </p>
+          <h2 className="font-heading text-2xl font-bold text-carbone mt-8 mb-4">3. Finalità del Trattamento</h2>
+          <p className="text-grigio leading-relaxed mb-6">
+            I dati raccolti vengono utilizzati esclusivamente per rispondere alle richieste di informazioni inviate
+            attraverso il form di contatto e per fornire informazioni sui nostri servizi.
+          </p>
+          <h2 className="font-heading text-2xl font-bold text-carbone mt-8 mb-4">4. Diritti dell'Interessato</h2>
+          <p className="text-grigio leading-relaxed mb-6">
+            In conformità al GDPR (Regolamento UE 2016/679), l'utente ha diritto di accedere ai propri dati personali,
+            richiederne la rettifica, la cancellazione, la limitazione del trattamento, nonché di opporsi al trattamento stesso.
+          </p>
         </div>
+      </div>
+    </div>
+  )
+}
 
-        {/* Features Grid - Glass cards */}
-        <div className="grid md:grid-cols-3 gap-6 mt-20">
-          {[
-            {
-              icon: '⚡',
-              title: 'Veloce',
-              description: 'Costruito con Vite e React per prestazioni ottimali'
-            },
-            {
-              icon: '🎯',
-              title: 'Personalizzabile',
-              description: 'Tailwind CSS per uno stile completamente flessibile'
-            },
-            {
-              icon: '💎',
-              title: 'Moderno',
-              description: 'Design contemporaneo e responsive su tutti i dispositivi'
-            }
-          ].map((feature, index) => (
-            <div
-              key={index}
-              className="p-6 rounded-2xl backdrop-blur-xl transition-all duration-300 hover:scale-[1.02]"
-              style={{
-                backgroundColor: 'rgba(255, 255, 255, 0.03)',
-                border: '2px solid rgba(255, 255, 255, 0.1)'
-              }}
-              onMouseOver={(e) => e.currentTarget.style.borderColor = 'rgba(34, 197, 94, 0.3)'}
-              onMouseOut={(e) => e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.1)'}
-            >
-              <div className="text-4xl mb-4">{feature.icon}</div>
-              <h3 className="text-xl font-semibold text-white mb-2">{feature.title}</h3>
-              <p className="text-white/60">{feature.description}</p>
-            </div>
-          ))}
+function CookiePolicy() {
+  return (
+    <div className="min-h-screen bg-grigio-perla pt-32 pb-20">
+      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h1 className="font-heading text-4xl font-bold text-carbone mb-8">Cookie Policy</h1>
+        <div className="bg-white rounded-2xl p-8 shadow-sm prose prose-gray max-w-none">
+          <p className="text-grigio leading-relaxed mb-6">
+            <strong>Artour Caffè</strong> - Via del Cantiere, 14 - 24065 Lovere (BG)
+          </p>
+          <h2 className="font-heading text-2xl font-bold text-carbone mt-8 mb-4">Cosa sono i Cookie</h2>
+          <p className="text-grigio leading-relaxed mb-6">
+            I cookie sono piccoli file di testo che i siti visitati inviano al browser dell'utente,
+            dove vengono memorizzati per essere ritrasmessi agli stessi siti alla visita successiva.
+          </p>
+          <h2 className="font-heading text-2xl font-bold text-carbone mt-8 mb-4">Cookie Utilizzati</h2>
+          <p className="text-grigio leading-relaxed mb-6">
+            Questo sito utilizza esclusivamente cookie tecnici necessari per il corretto funzionamento del sito
+            e cookie analitici in forma anonima per raccogliere informazioni aggregate sull'utilizzo del sito.
+          </p>
+          <h2 className="font-heading text-2xl font-bold text-carbone mt-8 mb-4">Cookie di Terze Parti</h2>
+          <p className="text-grigio leading-relaxed mb-6">
+            Il sito incorpora contenuti di terze parti (Google Maps, Instagram) che potrebbero installare
+            propri cookie. Per maggiori informazioni, consultare le rispettive privacy policy.
+          </p>
+          <h2 className="font-heading text-2xl font-bold text-carbone mt-8 mb-4">Gestione dei Cookie</h2>
+          <p className="text-grigio leading-relaxed mb-6">
+            L'utente può gestire le preferenze relative ai cookie attraverso le impostazioni del proprio browser.
+          </p>
         </div>
-      </main>
-
-      {/* Footer - minimal */}
-      <footer className="mt-16 text-center">
-        <p className="text-white/30 text-sm">
-          Creato con{' '}
-          <a
-            href="https://studio.webwiseitalia.com"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="transition-colors"
-            style={{ color: '#22c55e' }}
-          >
-            STUD
-          </a>
-        </p>
-      </footer>
+      </div>
     </div>
   )
 }
