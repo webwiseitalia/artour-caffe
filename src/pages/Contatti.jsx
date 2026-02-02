@@ -1,398 +1,589 @@
-import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { useState, useEffect, useRef } from 'react'
+import { gsap } from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { motion } from 'framer-motion'
+
+import foto1 from '../assets/foto/foto-1.webp'
+import foto15 from '../assets/foto/foto-15.webp'
+import foto19 from '../assets/foto/foto-19.webp'
+
+gsap.registerPlugin(ScrollTrigger)
 
 export default function Contatti() {
   const [formData, setFormData] = useState({
     nome: '',
     email: '',
     telefono: '',
+    motivo: '',
     messaggio: '',
-    privacy: false,
   })
-  const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitted, setSubmitted] = useState(false)
+  const heroRef = useRef(null)
+  const infoRef = useRef(null)
+  const formRef = useRef(null)
 
-  const handleChange = (e) => {
-    const { name, value, type, checked } = e.target
-    setFormData(prev => ({
-      ...prev,
-      [name]: type === 'checkbox' ? checked : value
-    }))
-  }
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      // Hero character animation
+      gsap.from('.hero-char', {
+        y: 150,
+        rotationX: 90,
+        opacity: 0,
+        duration: 1.2,
+        ease: 'power4.out',
+        stagger: 0.03,
+        delay: 0.3
+      })
+
+      // Hero subtitle
+      gsap.from('.hero-sub', {
+        y: 30,
+        opacity: 0,
+        duration: 1,
+        ease: 'power3.out',
+        delay: 0.8
+      })
+
+      // Floating images
+      gsap.to('.floating-img', {
+        y: -20,
+        duration: 3,
+        ease: 'power1.inOut',
+        yoyo: true,
+        repeat: -1,
+        stagger: { each: 0.5, from: 'random' }
+      })
+    }, heroRef)
+
+    return () => ctx.revert()
+  }, [])
+
+  // Info section animations
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      gsap.from('.info-card', {
+        y: 60,
+        opacity: 0,
+        rotation: (i) => (i % 2 === 0 ? -2 : 2),
+        duration: 0.8,
+        ease: 'power3.out',
+        stagger: 0.15,
+        scrollTrigger: {
+          trigger: infoRef.current,
+          start: 'top 70%',
+        }
+      })
+    }, infoRef)
+
+    return () => ctx.revert()
+  }, [])
+
+  // Form section animations
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      gsap.from('.form-element', {
+        y: 40,
+        opacity: 0,
+        duration: 0.6,
+        ease: 'power3.out',
+        stagger: 0.1,
+        scrollTrigger: {
+          trigger: formRef.current,
+          start: 'top 70%',
+        }
+      })
+    }, formRef)
+
+    return () => ctx.revert()
+  }, [])
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    setIsSubmitting(true)
-
-    // Simulate form submission
-    await new Promise(resolve => setTimeout(resolve, 1000))
-
-    setIsSubmitting(false)
+    await new Promise(resolve => setTimeout(resolve, 800))
     setSubmitted(true)
   }
 
+  // Split title into characters
+  const titleLine1 = "Vieni a".split('')
+  const titleLine2 = "Trovarci".split('')
+
   return (
-    <div className="bg-white">
-      {/* HERO */}
-      <section className="py-32 pt-40 bg-gradient-lago">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <span className="text-tramonto font-medium tracking-widest uppercase text-sm">Dove Siamo</span>
-          <h1 className="font-heading text-4xl sm:text-5xl lg:text-6xl font-bold text-white mt-2 mb-6">
-            Vieni a Trovarci
+    <div className="bg-[var(--grigio-perla)]">
+      {/* CINEMATIC HERO */}
+      <section ref={heroRef} className="relative min-h-[90vh] flex items-center overflow-hidden bg-[var(--notte)]">
+        {/* Floating preview images */}
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="floating-img absolute top-[20%] left-[8%] w-32 h-40 md:w-44 md:h-52 opacity-25 rotate-[-6deg]">
+            <img src={foto1} alt="" className="w-full h-full object-cover" />
+          </div>
+          <div className="floating-img absolute top-[30%] right-[10%] w-28 h-36 md:w-40 md:h-48 opacity-20 rotate-[4deg]">
+            <img src={foto15} alt="" className="w-full h-full object-cover" />
+          </div>
+          <div className="floating-img absolute bottom-[25%] right-[25%] w-36 h-28 md:w-48 md:h-36 opacity-15 rotate-[-3deg]">
+            <img src={foto19} alt="" className="w-full h-full object-cover" />
+          </div>
+        </div>
+
+        {/* Gradient overlays */}
+        <div className="absolute inset-0 bg-gradient-to-b from-[var(--notte)] via-transparent to-[var(--notte)]" />
+        <div className="absolute inset-0 bg-gradient-to-r from-[var(--notte)] via-transparent to-[var(--notte)] opacity-60" />
+
+        {/* Main content */}
+        <div className="relative z-10 w-full px-6 md:px-12 lg:px-24 pt-32 pb-16">
+          <span className="hero-sub block text-[var(--tramonto)] text-sm tracking-[0.3em] uppercase mb-8">
+            Porto Turistico di Lovere
+          </span>
+
+          {/* Main title with character animation */}
+          <h1 className="font-bold text-white leading-[0.85] overflow-hidden" style={{ fontSize: 'clamp(3rem, 12vw, 12rem)' }}>
+            <span className="block">
+              {titleLine1.map((char, i) => (
+                <span key={i} className="hero-char inline-block">{char === ' ' ? '\u00A0' : char}</span>
+              ))}
+            </span>
+            <span className="block overflow-hidden mt-2">
+              {titleLine2.map((char, i) => (
+                <span key={i} className="hero-char inline-block text-stroke text-[var(--tramonto)]">
+                  {char}
+                </span>
+              ))}
+            </span>
           </h1>
-          <p className="text-white/80 text-xl max-w-3xl mx-auto">
-            Porto Turistico di Lovere, sul Lago d'Iseo
-          </p>
+
+          {/* Quick info */}
+          <div className="hero-sub flex flex-wrap gap-8 mt-12">
+            <div>
+              <span className="text-white/40 text-xs tracking-wider uppercase block">Indirizzo</span>
+              <span className="text-white text-lg">Via del Cantiere, 14 - Lovere (BG)</span>
+            </div>
+            <div>
+              <span className="text-white/40 text-xs tracking-wider uppercase block">Telefono</span>
+              <a href="tel:+393803654787" className="text-[var(--tramonto)] text-lg hover:text-white transition-colors">
+                +39 380 365 4787
+              </a>
+            </div>
+          </div>
+
+          {/* Scroll indicator */}
+          <motion.div
+            className="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3"
+            animate={{ y: [0, 10, 0] }}
+            transition={{ duration: 2, repeat: Infinity }}
+          >
+            <span className="text-white/30 text-xs tracking-widest uppercase">Scopri di più</span>
+            <div className="w-px h-16 bg-gradient-to-b from-[var(--tramonto)] to-transparent" />
+          </motion.div>
         </div>
       </section>
 
-      {/* CONTACT INFO + MAP */}
-      <section className="py-20 lg:py-32">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid lg:grid-cols-2 gap-12 lg:gap-20">
-            {/* Contact Info */}
-            <div>
-              {/* Phone - Big CTA */}
-              <div className="bg-tramonto rounded-2xl p-8 mb-8 text-center">
-                <p className="text-notte/70 text-sm font-medium mb-2">Chiamaci o scrivici</p>
-                <a
-                  href="tel:+393803654787"
-                  className="flex items-center justify-center gap-3 text-3xl sm:text-4xl font-bold text-notte hover:opacity-80 transition-opacity"
-                >
-                  <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-                  </svg>
-                  380 365 4787
-                </a>
-              </div>
-
-              {/* WhatsApp */}
-              <a
+      {/* QUICK ACTIONS */}
+      <section className="py-8 bg-[var(--tramonto)]">
+        <div className="px-6 md:px-12 lg:px-24">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <p className="text-[var(--notte)] font-semibold text-lg">
+              Preferisci contattarci direttamente?
+            </p>
+            <div className="flex flex-wrap gap-3">
+              <motion.a
+                href="tel:+393803654787"
+                className="inline-flex items-center gap-2 bg-[var(--notte)] text-white px-6 py-3 font-medium"
+                whileHover={{ scale: 1.03 }}
+                whileTap={{ scale: 0.97 }}
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                </svg>
+                Chiamaci
+              </motion.a>
+              <motion.a
                 href="https://wa.me/393803654787"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center justify-center gap-3 bg-porto text-white font-semibold px-8 py-4 rounded-full transition-all hover:scale-105 mb-8"
+                className="inline-flex items-center gap-2 bg-[#25D366] text-white px-6 py-3 font-medium"
+                whileHover={{ scale: 1.03 }}
+                whileTap={{ scale: 0.97 }}
               >
-                <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
                 </svg>
-                Scrivici su WhatsApp
-              </a>
+                WhatsApp
+              </motion.a>
+            </div>
+          </div>
+        </div>
+      </section>
 
-              {/* Address */}
-              <div className="bg-grigio-perla rounded-2xl p-8 mb-8">
-                <h3 className="font-heading text-xl font-bold text-carbone mb-4">Indirizzo</h3>
-                <address className="not-italic text-grigio leading-relaxed">
-                  <p className="font-semibold text-carbone text-lg">Artour Caffè</p>
-                  <p>Via del Cantiere, 14</p>
-                  <p>24065 Lovere (BG)</p>
-                  <p className="mt-2 text-lago">Porto Turistico di Cornasola</p>
-                  <p className="text-sm text-grigio-chiaro">Lago d'Iseo - Sebino</p>
+      {/* INFO CARDS */}
+      <section ref={infoRef} className="py-24 md:py-40">
+        <div className="px-6 md:px-12 lg:px-24">
+          <div className="grid lg:grid-cols-12 gap-16">
+            {/* Left - Info cards */}
+            <div className="lg:col-span-5 space-y-6">
+              {/* Address card */}
+              <motion.div
+                className="info-card bg-white p-8 shadow-sm hover:shadow-xl transition-all duration-500 relative overflow-hidden group"
+                whileHover={{ y: -5 }}
+              >
+                <div className="absolute top-0 left-0 w-1 h-full bg-[var(--tramonto)] transform scale-y-0 group-hover:scale-y-100 transition-transform origin-top" />
+                <span className="text-5xl mb-4 block">📍</span>
+                <span className="text-[var(--tramonto)] text-xs tracking-widest uppercase">Indirizzo</span>
+                <address className="not-italic text-[var(--carbone)] mt-3">
+                  <p className="font-bold text-2xl">Artour Caffè</p>
+                  <p className="text-[var(--grigio)] mt-2">Via del Cantiere, 14</p>
+                  <p className="text-[var(--grigio)]">24065 Lovere (BG)</p>
+                  <p className="text-[var(--lago)] mt-3 font-medium">Porto Turistico di Cornasola</p>
                 </address>
                 <a
                   href="https://maps.google.com/?q=Via+del+Cantiere+14+Lovere+BG"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 text-lago font-medium mt-4 hover:text-tramonto transition-colors"
+                  className="inline-flex items-center gap-2 text-[var(--tramonto)] hover:text-[var(--spritz)] transition-colors mt-6 font-medium"
                 >
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                  </svg>
                   Apri in Google Maps
+                  <span>→</span>
                 </a>
-              </div>
+              </motion.div>
 
-              {/* Social */}
-              <div className="flex gap-4">
-                <a
-                  href="https://www.instagram.com/artour_cafe_/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex-1 flex items-center justify-center gap-2 bg-gradient-to-r from-purple-500 via-pink-500 to-orange-500 text-white font-medium px-6 py-4 rounded-xl transition-all hover:scale-105"
-                >
-                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
-                  </svg>
-                  Instagram
-                </a>
-              </div>
-            </div>
-
-            {/* Map */}
-            <div>
-              <div className="aspect-square lg:aspect-auto lg:h-full min-h-[400px] rounded-2xl overflow-hidden shadow-2xl">
-                <iframe
-                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2779.8893071856645!2d10.065661315795526!3d45.81264997910753!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47817e8f3d8c6add%3A0x1f6b7b7b7b7b7b7b!2sVia%20del%20Cantiere%2C%2014%2C%2024065%20Lovere%20BG!5e0!3m2!1sit!2sit!4v1629999999999!5m2!1sit!2sit"
-                  width="100%"
-                  height="100%"
-                  style={{ border: 0 }}
-                  allowFullScreen=""
-                  loading="lazy"
-                  referrerPolicy="no-referrer-when-downgrade"
-                  title="Mappa Artour Caffè"
-                ></iframe>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ORARI */}
-      <section className="py-20 lg:py-32 bg-grigio-perla">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <span className="text-tramonto font-medium tracking-widest uppercase text-sm">—— Quando Trovarci</span>
-            <h2 className="font-heading text-4xl sm:text-5xl font-bold text-carbone mt-2">
-              Orari di Apertura
-            </h2>
-          </div>
-
-          <div className="max-w-2xl mx-auto">
-            <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
-              <table className="w-full">
-                <tbody>
-                  {[
-                    { day: 'Lunedì', hours: 'CHIUSO', closed: true },
-                    { day: 'Martedì', hours: '08:00 - 00:00' },
-                    { day: 'Mercoledì', hours: '08:00 - 00:00' },
-                    { day: 'Giovedì', hours: '08:00 - 00:00' },
-                    { day: 'Venerdì', hours: '08:00 - 02:00', lateNight: true },
-                    { day: 'Sabato', hours: '08:00 - 02:00', lateNight: true },
-                    { day: 'Domenica', hours: '08:00 - 00:00' },
-                  ].map((row, index) => (
-                    <tr key={row.day} className={index !== 6 ? 'border-b border-grigio-perla' : ''}>
-                      <td className={`py-5 px-6 font-medium ${row.closed ? 'text-grigio-chiaro' : 'text-carbone'}`}>
-                        {row.day}
-                      </td>
-                      <td className={`py-5 px-6 text-right font-semibold ${
-                        row.closed ? 'text-spritz' : row.lateNight ? 'text-tramonto' : 'text-lago'
-                      }`}>
-                        {row.hours}
-                        {row.lateNight && (
-                          <span className="ml-2 text-xs bg-tramonto/10 text-tramonto px-2 py-1 rounded-full">
-                            Late Night
-                          </span>
-                        )}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-
-            <div className="mt-8 text-center">
-              <p className="text-grigio">
-                <span className="font-semibold text-carbone">Colazione</span> disponibile tutto il giorno
-              </p>
-              <p className="text-grigio">
-                <span className="font-semibold text-carbone">Aperitivo</span> dalle 18:00
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* COME RAGGIUNGERCI */}
-      <section className="py-20 lg:py-32">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <span className="text-tramonto font-medium tracking-widest uppercase text-sm">—— Indicazioni</span>
-            <h2 className="font-heading text-4xl sm:text-5xl font-bold text-carbone mt-2">
-              Come Raggiungerci
-            </h2>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto">
-            {/* In Auto */}
-            <div className="bg-grigio-perla rounded-2xl p-8 text-center">
-              <div className="w-16 h-16 bg-lago/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                <svg className="w-8 h-8 text-lago" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7h8m-8 4h4m6-4v8a2 2 0 01-2 2H6a2 2 0 01-2-2V7a2 2 0 012-2h2l2-3h4l2 3h2a2 2 0 012 2z" />
-                </svg>
-              </div>
-              <h3 className="font-heading text-xl font-bold text-carbone mb-4">In Auto</h3>
-              <ul className="text-grigio text-sm space-y-2">
-                <li><strong>Da Bergamo:</strong> ~35 km via SS42</li>
-                <li><strong>Da Brescia:</strong> ~45 km via SS510</li>
-                <li><strong>Da Milano:</strong> ~90 km via A4 + SS42</li>
-              </ul>
-            </div>
-
-            {/* Parcheggio */}
-            <div className="bg-grigio-perla rounded-2xl p-8 text-center">
-              <div className="w-16 h-16 bg-porto/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                <svg className="w-8 h-8 text-porto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />
-                </svg>
-              </div>
-              <h3 className="font-heading text-xl font-bold text-carbone mb-4">Parcheggio</h3>
-              <p className="text-grigio text-sm">
-                Parcheggio gratuito disponibile nelle vicinanze del Porto Turistico
-              </p>
-            </div>
-
-            {/* In Battello */}
-            <div className="bg-grigio-perla rounded-2xl p-8 text-center">
-              <div className="w-16 h-16 bg-cielo/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                <svg className="w-8 h-8 text-cielo" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 15l4-8 4 8m-4-8v8m6-8l4 8 4-8m-4 8v-8M3 21h18" />
-                </svg>
-              </div>
-              <h3 className="font-heading text-xl font-bold text-carbone mb-4">In Battello</h3>
-              <p className="text-grigio text-sm">
-                Collegamento con gli altri paesi del Lago d'Iseo via servizio di navigazione
-              </p>
-            </div>
-          </div>
-
-          {/* Accessibilità */}
-          <div className="max-w-2xl mx-auto mt-12 bg-lago/5 rounded-2xl p-8">
-            <h3 className="font-heading text-xl font-bold text-carbone mb-4 text-center">Accessibilità</h3>
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-              {[
-                { icon: '♿', text: 'Ingresso accessibile' },
-                { icon: '🚻', text: 'Bagno accessibile' },
-                { icon: '🅿️', text: 'Parcheggio accessibile' },
-                { icon: '🐕', text: 'Pet-friendly' },
-              ].map((item, index) => (
-                <div key={index} className="flex flex-col items-center text-center">
-                  <span className="text-3xl mb-2">{item.icon}</span>
-                  <span className="text-sm text-grigio">{item.text}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* FORM CONTATTO */}
-      <section className="py-20 lg:py-32 bg-grigio-perla">
-        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <span className="text-tramonto font-medium tracking-widest uppercase text-sm">—— Scrivici</span>
-            <h2 className="font-heading text-4xl sm:text-5xl font-bold text-carbone mt-2">
-              Inviaci un Messaggio
-            </h2>
-            <p className="text-grigio mt-4">Ti rispondiamo entro 24 ore</p>
-          </div>
-
-          {submitted ? (
-            <div className="bg-porto/10 border border-porto rounded-2xl p-8 text-center">
-              <div className="w-16 h-16 bg-porto/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                <svg className="w-8 h-8 text-porto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                </svg>
-              </div>
-              <h3 className="font-heading text-2xl font-bold text-carbone mb-2">Messaggio Inviato!</h3>
-              <p className="text-grigio">Grazie per averci contattato. Ti risponderemo al più presto.</p>
-            </div>
-          ) : (
-            <form onSubmit={handleSubmit} className="bg-white rounded-2xl shadow-lg p-8">
-              <div className="grid sm:grid-cols-2 gap-6 mb-6">
-                <div>
-                  <label htmlFor="nome" className="block text-sm font-medium text-carbone mb-2">
-                    Nome *
-                  </label>
-                  <input
-                    type="text"
-                    id="nome"
-                    name="nome"
-                    required
-                    value={formData.nome}
-                    onChange={handleChange}
-                    className="w-full px-4 py-3 rounded-xl border border-grigio-chiaro focus:border-lago focus:ring-2 focus:ring-lago/20 outline-none transition-all"
-                    placeholder="Il tuo nome"
-                  />
-                </div>
-                <div>
-                  <label htmlFor="email" className="block text-sm font-medium text-carbone mb-2">
-                    Email *
-                  </label>
-                  <input
-                    type="email"
-                    id="email"
-                    name="email"
-                    required
-                    value={formData.email}
-                    onChange={handleChange}
-                    className="w-full px-4 py-3 rounded-xl border border-grigio-chiaro focus:border-lago focus:ring-2 focus:ring-lago/20 outline-none transition-all"
-                    placeholder="La tua email"
-                  />
-                </div>
-              </div>
-
-              <div className="mb-6">
-                <label htmlFor="telefono" className="block text-sm font-medium text-carbone mb-2">
-                  Telefono
-                </label>
-                <input
-                  type="tel"
-                  id="telefono"
-                  name="telefono"
-                  value={formData.telefono}
-                  onChange={handleChange}
-                  className="w-full px-4 py-3 rounded-xl border border-grigio-chiaro focus:border-lago focus:ring-2 focus:ring-lago/20 outline-none transition-all"
-                  placeholder="Il tuo numero di telefono"
-                />
-              </div>
-
-              <div className="mb-6">
-                <label htmlFor="messaggio" className="block text-sm font-medium text-carbone mb-2">
-                  Messaggio *
-                </label>
-                <textarea
-                  id="messaggio"
-                  name="messaggio"
-                  required
-                  rows={5}
-                  value={formData.messaggio}
-                  onChange={handleChange}
-                  className="w-full px-4 py-3 rounded-xl border border-grigio-chiaro focus:border-lago focus:ring-2 focus:ring-lago/20 outline-none transition-all resize-none"
-                  placeholder="Come possiamo aiutarti?"
-                />
-              </div>
-
-              <div className="mb-8">
-                <label className="flex items-start gap-3 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    name="privacy"
-                    required
-                    checked={formData.privacy}
-                    onChange={handleChange}
-                    className="mt-1 w-5 h-5 text-lago rounded focus:ring-lago"
-                  />
-                  <span className="text-sm text-grigio">
-                    Ho letto e accetto la{' '}
-                    <Link to="/privacy-policy" className="text-lago hover:text-tramonto">
-                      Privacy Policy
-                    </Link>
-                    . *
-                  </span>
-                </label>
-              </div>
-
-              <button
-                type="submit"
-                disabled={isSubmitting}
-                className="w-full bg-lago hover:bg-lago-dark text-white font-semibold px-8 py-4 rounded-full transition-all hover:scale-[1.02] disabled:opacity-70 disabled:cursor-not-allowed"
+              {/* Hours card */}
+              <motion.div
+                className="info-card bg-[var(--notte)] p-8 relative overflow-hidden group"
+                whileHover={{ y: -5 }}
               >
-                {isSubmitting ? 'Invio in corso...' : 'Invia Messaggio'}
-              </button>
+                <div className="absolute top-0 right-0 w-32 h-32 bg-[var(--tramonto)]/10 rounded-full blur-2xl" />
+                <span className="text-5xl mb-4 block">🕐</span>
+                <span className="text-[var(--tramonto)] text-xs tracking-widest uppercase">Orari</span>
+                <h3 className="text-white font-bold text-2xl mt-3 mb-6">Quando siamo aperti</h3>
+                <ul className="space-y-4">
+                  <li className="flex justify-between text-white/80 pb-4 border-b border-white/10">
+                    <span>Lunedì</span>
+                    <span className="text-[var(--spritz)] font-semibold">Chiuso</span>
+                  </li>
+                  <li className="flex justify-between text-white/80 pb-4 border-b border-white/10">
+                    <span>Martedì — Giovedì</span>
+                    <span>08:00 — 00:00</span>
+                  </li>
+                  <li className="flex justify-between text-white/80 pb-4 border-b border-white/10">
+                    <span>Venerdì — Sabato</span>
+                    <span className="text-[var(--tramonto)] font-semibold">08:00 — 02:00</span>
+                  </li>
+                  <li className="flex justify-between text-white/80">
+                    <span>Domenica</span>
+                    <span>08:00 — 00:00</span>
+                  </li>
+                </ul>
+              </motion.div>
 
-              <p className="text-center text-grigio-chiaro text-sm mt-4">
-                Oppure chiamaci al{' '}
-                <a href="tel:+393803654787" className="text-lago hover:text-tramonto">
-                  380 365 4787
-                </a>
-                {' '}o scrivici su{' '}
-                <a href="https://wa.me/393803654787" className="text-porto hover:text-porto/80">
-                  WhatsApp
-                </a>
+              {/* Contact card */}
+              <motion.div
+                className="info-card bg-[var(--lago)] p-8 text-white relative overflow-hidden group"
+                whileHover={{ y: -5 }}
+              >
+                <span className="text-5xl mb-4 block">📞</span>
+                <span className="text-white/60 text-xs tracking-widest uppercase">Contatti Diretti</span>
+                <div className="mt-6 space-y-4">
+                  <a
+                    href="tel:+393803654787"
+                    className="block text-3xl font-bold hover:text-[var(--tramonto)] transition-colors"
+                  >
+                    380 365 4787
+                  </a>
+                  <a
+                    href="mailto:info@artourcaffe.it"
+                    className="block text-white/80 hover:text-white transition-colors"
+                  >
+                    info@artourcaffe.it
+                  </a>
+                </div>
+              </motion.div>
+            </div>
+
+            {/* Right - Map + Form */}
+            <div className="lg:col-span-6 lg:col-start-7 space-y-8">
+              {/* Map */}
+              <div className="relative">
+                <div className="aspect-[4/3] overflow-hidden" style={{ clipPath: 'polygon(0 0, 100% 3%, 100% 100%, 0 97%)' }}>
+                  <iframe
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2779.8893071856645!2d10.065661315795526!3d45.81264997910753!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47817e8f3d8c6add%3A0x1f6b7b7b7b7b7b7b!2sVia%20del%20Cantiere%2C%2014%2C%2024065%20Lovere%20BG!5e0!3m2!1sit!2sit!4v1629999999999!5m2!1sit!2sit"
+                    width="100%"
+                    height="100%"
+                    style={{ border: 0 }}
+                    allowFullScreen=""
+                    loading="lazy"
+                    title="Mappa Artour Caffè"
+                    className="grayscale hover:grayscale-0 transition-all duration-500"
+                  />
+                </div>
+                {/* Map overlay badge */}
+                <div className="absolute bottom-6 left-6 bg-[var(--notte)] text-white px-4 py-2 text-sm font-medium">
+                  Porto Turistico
+                </div>
+              </div>
+
+              {/* Form */}
+              <div ref={formRef} className="bg-white p-8 md:p-12 shadow-sm">
+                <span className="form-element text-[var(--tramonto)] text-xs tracking-widest uppercase">Scrivici</span>
+                <h2 className="form-element text-[var(--carbone)] font-bold mt-2 mb-8" style={{ fontSize: 'clamp(1.5rem, 3vw, 2.5rem)' }}>
+                  Invia un messaggio
+                </h2>
+
+                {submitted ? (
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="bg-[var(--porto)]/10 border-2 border-[var(--porto)] p-8 text-center"
+                  >
+                    <span className="text-5xl block mb-4">✅</span>
+                    <p className="text-[var(--porto)] font-bold text-2xl mb-2">Messaggio inviato!</p>
+                    <p className="text-[var(--grigio)]">Ti risponderemo al più presto.</p>
+                  </motion.div>
+                ) : (
+                  <form onSubmit={handleSubmit} className="space-y-6">
+                    <div className="form-element grid md:grid-cols-2 gap-6">
+                      <div>
+                        <label className="text-[var(--grigio)] text-xs tracking-wider uppercase block mb-2">Nome *</label>
+                        <input
+                          type="text"
+                          placeholder="Il tuo nome"
+                          required
+                          value={formData.nome}
+                          onChange={(e) => setFormData({ ...formData, nome: e.target.value })}
+                          className="w-full bg-[var(--grigio-perla)] border-0 border-b-2 border-transparent focus:border-[var(--lago)] py-4 px-4 text-[var(--carbone)] placeholder:text-[var(--grigio)]/50 outline-none transition-colors"
+                        />
+                      </div>
+                      <div>
+                        <label className="text-[var(--grigio)] text-xs tracking-wider uppercase block mb-2">Email *</label>
+                        <input
+                          type="email"
+                          placeholder="La tua email"
+                          required
+                          value={formData.email}
+                          onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                          className="w-full bg-[var(--grigio-perla)] border-0 border-b-2 border-transparent focus:border-[var(--lago)] py-4 px-4 text-[var(--carbone)] placeholder:text-[var(--grigio)]/50 outline-none transition-colors"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="form-element grid md:grid-cols-2 gap-6">
+                      <div>
+                        <label className="text-[var(--grigio)] text-xs tracking-wider uppercase block mb-2">Telefono</label>
+                        <input
+                          type="tel"
+                          placeholder="Opzionale"
+                          value={formData.telefono}
+                          onChange={(e) => setFormData({ ...formData, telefono: e.target.value })}
+                          className="w-full bg-[var(--grigio-perla)] border-0 border-b-2 border-transparent focus:border-[var(--lago)] py-4 px-4 text-[var(--carbone)] placeholder:text-[var(--grigio)]/50 outline-none transition-colors"
+                        />
+                      </div>
+                      <div>
+                        <label className="text-[var(--grigio)] text-xs tracking-wider uppercase block mb-2">Motivo</label>
+                        <select
+                          value={formData.motivo}
+                          onChange={(e) => setFormData({ ...formData, motivo: e.target.value })}
+                          className="w-full bg-[var(--grigio-perla)] border-0 border-b-2 border-transparent focus:border-[var(--lago)] py-4 px-4 text-[var(--carbone)] outline-none transition-colors appearance-none cursor-pointer"
+                        >
+                          <option value="">Seleziona...</option>
+                          <option value="info">Informazioni generali</option>
+                          <option value="prenotazione">Prenotazione tavolo</option>
+                          <option value="evento">Evento privato</option>
+                          <option value="catering">Catering</option>
+                          <option value="altro">Altro</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div className="form-element">
+                      <label className="text-[var(--grigio)] text-xs tracking-wider uppercase block mb-2">Messaggio *</label>
+                      <textarea
+                        placeholder="Come possiamo aiutarti?"
+                        required
+                        rows={5}
+                        value={formData.messaggio}
+                        onChange={(e) => setFormData({ ...formData, messaggio: e.target.value })}
+                        className="w-full bg-[var(--grigio-perla)] border-0 border-b-2 border-transparent focus:border-[var(--lago)] py-4 px-4 text-[var(--carbone)] placeholder:text-[var(--grigio)]/50 outline-none transition-colors resize-none"
+                      />
+                    </div>
+
+                    <motion.button
+                      type="submit"
+                      className="form-element w-full bg-[var(--lago)] text-white px-12 py-5 font-bold text-lg hover:bg-[var(--notte)] transition-colors"
+                      whileHover={{ scale: 1.01 }}
+                      whileTap={{ scale: 0.99 }}
+                    >
+                      Invia messaggio
+                    </motion.button>
+                  </form>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* HOW TO REACH US */}
+      <section className="py-24 md:py-40 bg-[var(--notte)]">
+        <div className="px-6 md:px-12 lg:px-24">
+          <div className="grid lg:grid-cols-12 gap-16 items-end mb-16">
+            <div className="lg:col-span-6">
+              <span className="text-[var(--tramonto)] text-xs tracking-widest uppercase">Indicazioni</span>
+              <h2 className="text-white font-bold mt-2 leading-[1.1]" style={{ fontSize: 'clamp(2rem, 5vw, 4rem)' }}>
+                Come<br />
+                <span className="text-stroke text-[var(--tramonto)]">raggiungerci</span>
+              </h2>
+            </div>
+            <div className="lg:col-span-5 lg:col-start-8">
+              <p className="text-white/60 text-lg">
+                Siamo facilmente raggiungibili in auto, con parcheggio gratuito nelle vicinanze.
+                Il locale è accessibile a tutti.
               </p>
-            </form>
-          )}
+            </div>
+          </div>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {[
+              {
+                icon: '🚗',
+                title: 'In auto',
+                items: ['Da Bergamo: ~35 km via SS42', 'Da Brescia: ~45 km via SS510', 'Da Milano: ~90 km via A4'],
+              },
+              {
+                icon: '🅿️',
+                title: 'Parcheggio',
+                items: ['Parcheggio gratuito', 'Nelle vicinanze del porto', 'Ampio e comodo'],
+              },
+              {
+                icon: '⛵',
+                title: 'In battello',
+                items: ['Fermata Porto Turistico', 'Collegamento con Monte Isola', 'Navigazione Lago d\'Iseo'],
+              },
+              {
+                icon: '♿',
+                title: 'Accessibilità',
+                items: ['Ingresso accessibile', 'Bagno per disabili', 'Pet-friendly 🐕'],
+              },
+            ].map((card, i) => (
+              <motion.div
+                key={i}
+                className="border border-white/10 p-8 hover:border-[var(--tramonto)]/50 hover:bg-white/5 transition-all duration-500 group"
+                initial={{ opacity: 0, y: 40 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.1 }}
+              >
+                <span className="text-5xl mb-6 block group-hover:scale-110 transition-transform">{card.icon}</span>
+                <h3 className="text-white font-bold text-xl mb-4">{card.title}</h3>
+                <ul className="text-white/60 text-sm space-y-2">
+                  {card.items.map((item, j) => (
+                    <li key={j} className="flex items-start gap-2">
+                      <span className="text-[var(--tramonto)] mt-1">•</span>
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </motion.div>
+            ))}
+          </div>
+
+          {/* Distance badges */}
+          <div className="mt-16 flex flex-wrap justify-center gap-6">
+            {[
+              { city: 'Bergamo', dist: '35 km' },
+              { city: 'Brescia', dist: '45 km' },
+              { city: 'Milano', dist: '90 km' },
+              { city: 'Iseo', dist: '25 km' },
+            ].map((item, i) => (
+              <motion.div
+                key={i}
+                className="bg-white/5 border border-white/10 px-6 py-4 text-center"
+                whileHover={{ scale: 1.05, borderColor: 'var(--tramonto)' }}
+              >
+                <span className="text-[var(--tramonto)] font-bold text-2xl block">{item.dist}</span>
+                <span className="text-white/50 text-xs tracking-wider uppercase">da {item.city}</span>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* SOCIAL FOLLOW */}
+      <section className="py-24 md:py-32 bg-gradient-to-br from-[var(--lago)] to-[var(--notte)]">
+        <div className="px-6 md:px-12 lg:px-24">
+          <div className="max-w-4xl mx-auto text-center">
+            <span className="text-white/50 text-xs tracking-widest uppercase">Seguici</span>
+            <h2 className="text-white font-bold mt-4 mb-8" style={{ fontSize: 'clamp(2rem, 5vw, 4rem)' }}>
+              Rimani in contatto
+            </h2>
+            <p className="text-white/60 text-lg max-w-xl mx-auto mb-12">
+              Seguici sui social per rimanere aggiornato su eventi, novità e tutto quello che succede al locale!
+            </p>
+
+            <div className="flex flex-wrap justify-center gap-4">
+              <motion.a
+                href="https://www.instagram.com/artour_cafe_/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-3 bg-gradient-to-r from-purple-500 via-pink-500 to-orange-500 text-white font-bold px-8 py-4"
+                whileHover={{ scale: 1.03 }}
+                whileTap={{ scale: 0.97 }}
+              >
+                <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+                </svg>
+                @artour_cafe_
+              </motion.a>
+
+              <motion.a
+                href="https://www.facebook.com/artourcaffe"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-3 bg-[#1877F2] text-white font-bold px-8 py-4"
+                whileHover={{ scale: 1.03 }}
+                whileTap={{ scale: 0.97 }}
+              >
+                <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                </svg>
+                Facebook
+              </motion.a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* FINAL CTA */}
+      <section className="py-24 md:py-40 bg-[var(--tramonto)] relative overflow-hidden">
+        {/* Pattern */}
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute inset-0" style={{
+            backgroundImage: 'radial-gradient(circle, var(--notte) 1px, transparent 1px)',
+            backgroundSize: '24px 24px'
+          }} />
+        </div>
+
+        <div className="relative z-10 px-6 md:px-12 lg:px-24 text-center">
+          <span className="text-[var(--notte)]/60 text-xs tracking-widest uppercase">Ti aspettiamo</span>
+          <h2 className="text-[var(--notte)] font-bold mt-4 mb-8" style={{ fontSize: 'clamp(2.5rem, 7vw, 6rem)' }}>
+            A presto!
+          </h2>
+          <p className="text-[var(--notte)]/70 text-lg max-w-xl mx-auto mb-12">
+            Che sia per un caffè veloce, un pranzo di lavoro o una serata con gli amici,
+            saremo felici di accoglierti.
+          </p>
+
+          <motion.a
+            href="https://maps.google.com/?q=Via+del+Cantiere+14+Lovere+BG"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center justify-center gap-3 bg-[var(--notte)] text-white px-10 py-5 font-bold text-lg"
+            whileHover={{ scale: 1.03 }}
+            whileTap={{ scale: 0.97 }}
+          >
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+            </svg>
+            Portami lì
+            <span>→</span>
+          </motion.a>
         </div>
       </section>
     </div>

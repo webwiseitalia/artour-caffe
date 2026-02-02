@@ -1,7 +1,8 @@
-import { Routes, Route } from 'react-router-dom'
+import { Routes, Route, useLocation } from 'react-router-dom'
+import { useEffect } from 'react'
 import Navbar from './components/Navbar'
 import Footer from './components/Footer'
-import ScrollToTop from './components/ScrollToTop'
+import SmoothScroll from './components/SmoothScroll'
 import Homepage from './pages/Homepage'
 import ChiSiamo from './pages/ChiSiamo'
 import Menu from './pages/Menu'
@@ -9,9 +10,17 @@ import Eventi from './pages/Eventi'
 import Galleria from './pages/Galleria'
 import Contatti from './pages/Contatti'
 
+function ScrollToTop() {
+  const { pathname } = useLocation()
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [pathname])
+  return null
+}
+
 function App() {
   return (
-    <>
+    <SmoothScroll>
       <ScrollToTop />
       <div className="min-h-screen flex flex-col">
         <Navbar />
@@ -29,39 +38,47 @@ function App() {
         </main>
         <Footer />
       </div>
-    </>
+    </SmoothScroll>
   )
 }
 
 function PrivacyPolicy() {
   return (
-    <div className="min-h-screen bg-grigio-perla pt-32 pb-20">
-      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h1 className="font-heading text-4xl font-bold text-carbone mb-8">Privacy Policy</h1>
-        <div className="bg-white rounded-2xl p-8 shadow-sm prose prose-gray max-w-none">
-          <p className="text-grigio leading-relaxed mb-6">
-            <strong>Artour Caffè</strong> - Via del Cantiere, 14 - 24065 Lovere (BG)
-          </p>
-          <h2 className="font-heading text-2xl font-bold text-carbone mt-8 mb-4">1. Titolare del Trattamento</h2>
-          <p className="text-grigio leading-relaxed mb-6">
-            Il titolare del trattamento dei dati personali è Artour Caffè, con sede in Via del Cantiere, 14 - 24065 Lovere (BG).
-            Per qualsiasi informazione relativa al trattamento dei dati personali è possibile contattarci al numero +39 380 365 4787.
-          </p>
-          <h2 className="font-heading text-2xl font-bold text-carbone mt-8 mb-4">2. Tipologia di Dati Raccolti</h2>
-          <p className="text-grigio leading-relaxed mb-6">
-            I dati personali raccolti attraverso il form di contatto presente sul sito includono: nome, indirizzo email,
-            numero di telefono (facoltativo) e il contenuto del messaggio inviato.
-          </p>
-          <h2 className="font-heading text-2xl font-bold text-carbone mt-8 mb-4">3. Finalità del Trattamento</h2>
-          <p className="text-grigio leading-relaxed mb-6">
-            I dati raccolti vengono utilizzati esclusivamente per rispondere alle richieste di informazioni inviate
-            attraverso il form di contatto e per fornire informazioni sui nostri servizi.
-          </p>
-          <h2 className="font-heading text-2xl font-bold text-carbone mt-8 mb-4">4. Diritti dell'Interessato</h2>
-          <p className="text-grigio leading-relaxed mb-6">
-            In conformità al GDPR (Regolamento UE 2016/679), l'utente ha diritto di accedere ai propri dati personali,
-            richiederne la rettifica, la cancellazione, la limitazione del trattamento, nonché di opporsi al trattamento stesso.
-          </p>
+    <div className="min-h-screen bg-[var(--grigio-perla)] pt-40 pb-20">
+      <div className="max-w-3xl mx-auto px-6 md:px-12">
+        <span className="text-[var(--tramonto)] text-xs tracking-widest uppercase">Legale</span>
+        <h1 className="font-bold text-[var(--carbone)] mt-2 mb-12" style={{ fontSize: 'clamp(2rem, 5vw, 4rem)' }}>
+          Privacy Policy
+        </h1>
+        <div className="space-y-8 text-[var(--grigio)]">
+          <section>
+            <h2 className="text-[var(--carbone)] font-semibold text-xl mb-4">1. Titolare del Trattamento</h2>
+            <p className="leading-relaxed">
+              Il titolare del trattamento dei dati personali è Artour Caffè, con sede in Via del Cantiere, 14 - 24065 Lovere (BG).
+              Per qualsiasi informazione è possibile contattarci al numero +39 380 365 4787.
+            </p>
+          </section>
+          <section>
+            <h2 className="text-[var(--carbone)] font-semibold text-xl mb-4">2. Dati Raccolti</h2>
+            <p className="leading-relaxed">
+              I dati personali raccolti attraverso il form di contatto includono: nome, indirizzo email,
+              numero di telefono (facoltativo) e il contenuto del messaggio.
+            </p>
+          </section>
+          <section>
+            <h2 className="text-[var(--carbone)] font-semibold text-xl mb-4">3. Finalità</h2>
+            <p className="leading-relaxed">
+              I dati vengono utilizzati esclusivamente per rispondere alle richieste inviate
+              attraverso il form di contatto.
+            </p>
+          </section>
+          <section>
+            <h2 className="text-[var(--carbone)] font-semibold text-xl mb-4">4. Diritti</h2>
+            <p className="leading-relaxed">
+              In conformità al GDPR, l'utente ha diritto di accedere ai propri dati,
+              richiederne la rettifica o la cancellazione.
+            </p>
+          </section>
         </div>
       </div>
     </div>
@@ -70,32 +87,32 @@ function PrivacyPolicy() {
 
 function CookiePolicy() {
   return (
-    <div className="min-h-screen bg-grigio-perla pt-32 pb-20">
-      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h1 className="font-heading text-4xl font-bold text-carbone mb-8">Cookie Policy</h1>
-        <div className="bg-white rounded-2xl p-8 shadow-sm prose prose-gray max-w-none">
-          <p className="text-grigio leading-relaxed mb-6">
-            <strong>Artour Caffè</strong> - Via del Cantiere, 14 - 24065 Lovere (BG)
-          </p>
-          <h2 className="font-heading text-2xl font-bold text-carbone mt-8 mb-4">Cosa sono i Cookie</h2>
-          <p className="text-grigio leading-relaxed mb-6">
-            I cookie sono piccoli file di testo che i siti visitati inviano al browser dell'utente,
-            dove vengono memorizzati per essere ritrasmessi agli stessi siti alla visita successiva.
-          </p>
-          <h2 className="font-heading text-2xl font-bold text-carbone mt-8 mb-4">Cookie Utilizzati</h2>
-          <p className="text-grigio leading-relaxed mb-6">
-            Questo sito utilizza esclusivamente cookie tecnici necessari per il corretto funzionamento del sito
-            e cookie analitici in forma anonima per raccogliere informazioni aggregate sull'utilizzo del sito.
-          </p>
-          <h2 className="font-heading text-2xl font-bold text-carbone mt-8 mb-4">Cookie di Terze Parti</h2>
-          <p className="text-grigio leading-relaxed mb-6">
-            Il sito incorpora contenuti di terze parti (Google Maps, Instagram) che potrebbero installare
-            propri cookie. Per maggiori informazioni, consultare le rispettive privacy policy.
-          </p>
-          <h2 className="font-heading text-2xl font-bold text-carbone mt-8 mb-4">Gestione dei Cookie</h2>
-          <p className="text-grigio leading-relaxed mb-6">
-            L'utente può gestire le preferenze relative ai cookie attraverso le impostazioni del proprio browser.
-          </p>
+    <div className="min-h-screen bg-[var(--grigio-perla)] pt-40 pb-20">
+      <div className="max-w-3xl mx-auto px-6 md:px-12">
+        <span className="text-[var(--tramonto)] text-xs tracking-widest uppercase">Legale</span>
+        <h1 className="font-bold text-[var(--carbone)] mt-2 mb-12" style={{ fontSize: 'clamp(2rem, 5vw, 4rem)' }}>
+          Cookie Policy
+        </h1>
+        <div className="space-y-8 text-[var(--grigio)]">
+          <section>
+            <h2 className="text-[var(--carbone)] font-semibold text-xl mb-4">Cosa sono i Cookie</h2>
+            <p className="leading-relaxed">
+              I cookie sono piccoli file di testo che i siti visitati inviano al browser dell'utente.
+            </p>
+          </section>
+          <section>
+            <h2 className="text-[var(--carbone)] font-semibold text-xl mb-4">Cookie Utilizzati</h2>
+            <p className="leading-relaxed">
+              Questo sito utilizza cookie tecnici necessari per il funzionamento
+              e cookie analitici anonimi.
+            </p>
+          </section>
+          <section>
+            <h2 className="text-[var(--carbone)] font-semibold text-xl mb-4">Terze Parti</h2>
+            <p className="leading-relaxed">
+              Il sito incorpora Google Maps e contenuti Instagram che potrebbero installare propri cookie.
+            </p>
+          </section>
         </div>
       </div>
     </div>
